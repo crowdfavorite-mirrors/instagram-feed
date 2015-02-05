@@ -1,0 +1,205 @@
+#sbi_admin{
+	overflow: hidden;
+}
+#sbi_admin #header{
+	padding: 0 0 10px 0;
+}
+#sbi_admin h3{
+	padding: 15px 0 0 0;
+}
+#sbi_admin .sbi_tooltip{
+	width: 80%;
+	display: none;
+
+	padding: 10px 15px;
+	margin: 10px 0;
+	font-size: 13px;
+	background: #f9f9f9;
+	background: rgba(255,255,255,0.8);
+	
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px;
+}
+#sbi_admin .sbi_more_info p{
+	font-size: 13px;
+}
+#sbi_admin .sbi_tooltip ul{
+	margin-top: 0;	
+	margin-bottom: 0;
+}
+#sbi_admin .sbi_tooltip li{
+	padding: 4px 0;
+}
+#sbi_admin .sbi_tooltip_link,
+#sbi_admin .sbi_external_link{
+	font-size: 13px;
+	margin-left: 10px;
+}
+#sbi_admin hr{
+	border: none;
+	margin: 15px 0;
+	border-bottom: 1px solid #ccc;
+}
+/* Instagram btn */
+#sbi_admin .sbi_admin_btn{
+	display: block;
+	float: left;
+	clear: both;
+	padding: 0 21px 0 126px;
+	height: 47px;
+	line-height: 47px;
+
+	background: #386793 url('../img/small-logo.png') no-repeat 16px 11px;
+	background: -moz-linear-gradient(top,  #3f6a91 0%, #2e6191 100%) url('../img/small-logo.png') no-repeat 16px 11px;
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#3f6a91), color-stop(100%,#2e6191)) url('../img/small-logo.png') no-repeat 16px 11px;
+	background: -webkit-linear-gradient(top,  #3f6a91 0%,#2e6191 100%) url('../img/small-logo.png') no-repeat 16px 11px;
+	background: -o-linear-gradient(top,  #3f6a91 0%,#2e6191 100%) url('../img/small-logo.png') no-repeat 16px 11px;
+	background: -ms-linear-gradient(top,  #3f6a91 0%,#2e6191 100%) url('../img/small-logo.png') no-repeat 16px 11px;
+	background: linear-gradient(to bottom,  #3f6a91 0%,#2e6191 100%) url('../img/small-logo.png') no-repeat 16px 11px;
+
+	color: #e9eef3;
+	text-decoration: none;
+
+	-moz-border-radius: 5px;
+  	-webkit-border-radius: 5px;
+  	border-radius: 5px;
+}
+#sbi_admin .sbi_admin_btn:hover{
+	background-color: #487aa9;
+	color: #fff;
+}
+#sbi_admin .sbi_note{
+	font-size: 12px;
+	font-style: italic;
+	margin-left: 10px;
+}
+#sbi_admin table.sbi_shortcode_table{
+	border-collapse: collapse;
+}
+#sbi_admin table.sbi_shortcode_table th,
+#sbi_admin table.sbi_shortcode_table td{
+  border: 1px solid #999;
+  padding: 0.5rem;
+  text-align: left;
+}
+#sbi_admin table.sbi_shortcode_table th{
+	background: rgba(0,0,0,0.1);
+}
+#sbi_admin table.sbi_shortcode_table td{
+	background: rgba(255,255,255,0.5);
+}
+#sbi_admin .sbi_table_header{
+	background: #ddd;
+	font-weight: bold;
+}
+
+#sbi_admin .sbi_radio_label{
+	width: 70px;
+	padding-top: 5px;
+
+	display: -moz-inline-stack;
+	display: inline-block;
+	vertical-align: top;
+	zoom: 1;
+	*display: inline;
+}
+
+/* Config info */
+#sbi_config{
+	float: left;
+	width: 100%;
+	clear: both;
+	margin: 10px 0 10px 0;
+}
+#sbi_config_info{
+	float: left;
+	clear: both;
+	padding: 5px 15px;
+	margin: 10px 0 0 0;
+
+	background: #fff;
+	border: 1px solid #ddd;
+
+	-webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,.07);
+	box-shadow: inset 0 1px 2px rgba(0,0,0,.07);
+
+	-moz-border-radius: 2px;
+  	-webkit-border-radius: 2px;
+  	border-radius: 2px;
+}
+
+/* License */
+#sbi_admin .sbi_license_status{
+	display: -moz-inline-stack;
+	display: inline-block;
+	vertical-align: top;
+	zoom: 1;
+	*display: inline;
+	
+	padding: 5px;
+}
+
+/* Add Facebook dashicon to CFF admin menu */
+#toplevel_page_sb-instagram-feed .toplevel_page_sb-instagram-feed .wp-menu-image:before{
+	content: "\f306";
+}
+
+/* Pro only notices */
+#sbi_admin .sbi_pro,
+#sbi_admin .sbi_pro label{
+	color: #999 !important;
+}
+#sbi_admin .sbi_shortcode_table tr.sbi_pro{
+	background: #eacccc;
+}
+#sbi_admin .sbi_table_key{
+	display: block;
+	float: left;
+	width: 11px;
+	height: 11px;
+	border: 1px solid #999;
+	background: #eacccc;
+	margin: 3px 6px 0 0;
+}
+
+
+
+
+/* Error notice */
+#sbi_admin .sbi_notice{
+	margin-top: 5px;
+	background: #f9ecda;
+	padding: 5px 10px;
+	border: 1px solid #e89a2e;
+	color: #cf6100;
+
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+#sbi_admin .sbi_notice a{
+	color: #d85600;
+}
+#sbi_admin .sbi_notice a:hover,
+#sbi_admin .sbi_notice a:focus{
+	color: #a34100;
+}
+#sbi_admin .sbi_notice p{
+	margin: 0;
+	padding: 5px 0;
+	font-size: 13px;
+}
+#sbi_admin .sbi_user_id_error{
+	display: none;
+
+	margin: 10px 0;
+	background: #F7E6E6;
+	padding: 5px 10px;
+	border: 1px solid #BA7B7B;
+	color: #592626;
+
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
