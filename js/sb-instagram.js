@@ -9,196 +9,199 @@
 	if(!Function.prototype.bind){Function.prototype.bind=function(e){if(typeof this!=="function"){throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable")}var t=Array.prototype.slice.call(arguments,1),n=this,r=function(){},i=function(){return n.apply(this instanceof r&&e?this:e,t.concat(Array.prototype.slice.call(arguments)))};r.prototype=this.prototype;i.prototype=new r;return i}}
 
 
-	function sbi_init(){
+})(jQuery);
 
-		$('#sb_instagram.sbi').each(function(){
 
-			var $self = $(this),
-				$target = $self.find('#sbi_images'),
-				$loadBtn = $self.find("#sbi_load .sbi_load_btn"),
-				imgRes = 'standard_resolution',
-                cols = parseInt( this.getAttribute('data-cols') ),
-                num = this.getAttribute('data-num'),
-				//Convert styles JSON string to an object
-				feedOptions = JSON.parse( this.getAttribute('data-options') ),
-				getType = 'user',
-				sortby = 'none',
-                user_id = this.getAttribute('data-id'),
-                num = this.getAttribute('data-num'),
-				posts_arr = [],
-                $header = '';
+function sbi_init(){
 
-			if( feedOptions.sortby !== '' ) sortby = feedOptions.sortby;
+    jQuery('#sb_instagram.sbi').each(function(){
 
-			switch( this.getAttribute('data-res') ) {
-                case 'auto':
-                    var feedWidth = $('#sb_instagram').innerWidth(),
-                        colWidth = $('#sb_instagram').innerWidth() / cols;
+        var $self = jQuery(this),
+            $target = $self.find('#sbi_images'),
+            $loadBtn = $self.find("#sbi_load .sbi_load_btn"),
+            imgRes = 'standard_resolution',
+            cols = parseInt( this.getAttribute('data-cols') ),
+            num = this.getAttribute('data-num'),
+            //Convert styles JSON string to an object
+            feedOptions = JSON.parse( this.getAttribute('data-options') ),
+            getType = 'user',
+            sortby = 'none',
+            user_id = this.getAttribute('data-id'),
+            num = this.getAttribute('data-num'),
+            posts_arr = [],
+            $header = '',
+            morePosts = []; //Used to determine whether to show the Load More button when displaying posts from more than one id/hashtag. If one of the ids/hashtags has more posts then still show button.
 
-                    if( feedWidth < 680 ) colWidth = 300; //Use 306x306 images
-                    if( feedWidth < 480 && feedWidth > 300 ) colWidth = 480; //Use full size images
+        if( feedOptions.sortby !== '' ) sortby = feedOptions.sortby;
 
-                    if( colWidth < 150 ){
-                        imgRes = 'thumbnail';
-                    } else if( colWidth < 306 ){
-                        imgRes = 'low_resolution';
+        switch( this.getAttribute('data-res') ) {
+            case 'auto':
+                var feedWidth = jQuery('#sb_instagram').innerWidth(),
+                    colWidth = jQuery('#sb_instagram').innerWidth() / cols;
+
+                if( feedWidth < 680 ) colWidth = 300; //Use 306x306 images
+                if( feedWidth < 480 && feedWidth > 300 ) colWidth = 480; //Use full size images
+
+                if( colWidth < 150 ){
+                    imgRes = 'thumbnail';
+                } else if( colWidth < 306 ){
+                    imgRes = 'low_resolution';
+                } else {
+                    imgRes = 'standard_resolution';
+                }
+
+                break;
+            case 'thumb':
+                imgRes = 'thumbnail';
+                break;
+            case 'medium':
+                imgRes = 'low_resolution';
+                break;
+            default:
+                imgRes = 'standard_resolution';
+        }
+
+        //Split comma separated hashtags into array
+        var ids_arr = user_id.replace(/ /g,'').split(",");
+        var looparray = ids_arr;
+
+        //Get page info for first User ID
+        var headerStyles = '',
+            sbi_page_url = 'https://api.instagram.com/v1/users/' + ids_arr[0] + '?access_token=' + sb_instagram_js_options.sb_instagram_at;
+
+        if(feedOptions.headercolor.length) headerStyles = 'style="color: #'+feedOptions.headercolor+'"';
+
+        jQuery.ajax({
+            method: "GET",
+            url: sbi_page_url,
+            dataType: "jsonp",
+            success: function(data) {
+                $header = '<a href="http://instagram.com/'+data.data.username+'" target="_blank" title="@'+data.data.username+'" class="sbi_header_link" '+headerStyles+'>';
+                $header += '<div class="sbi_header_text">';
+                $header += '<h3'
+                if( data.data.bio.length == 0 ) $header += ' class="sbi_no_bio"';
+                $header += '>@'+data.data.username+'</h3>';
+                if( data.data.bio.length ) $header += '<p class="sbi_bio">'+data.data.bio+'</p>';
+                $header += '</div>';
+                $header += '<div class="sbi_header_img">';
+                $header += '<div class="sbi_header_img_hover"><i class="fa fa-instagram"></i></div>';
+                $header += '<img src="'+data.data.profile_picture+'" alt="'+data.data.full_name+'" width="50" height="50">';
+                $header += '</div>';
+                $header += '</a>';
+                //Add the header
+                $self.find('.sb_instagram_header').prepend( $header );
+                //Change the URL of the follow button
+                if( $self.find('.sbi_follow_btn').length ) $self.find('.sbi_follow_btn a').attr('href', 'http://instagram.com/' + data.data.username )
+            }
+        });
+
+        //Loop through User IDs
+        // looparray.forEach(function(entry) {
+        jQuery.each( looparray, function( index, entry ) {
+
+            var userFeed = new instagramfeed({
+                target: $target,
+                get: getType,
+                sortBy: sortby,
+                resolution: imgRes,
+                limit: parseInt( num ),
+                template: '<div class="sbi_item sbi_type_{{model.type}} sbi_new" id="sbi_{{id}}" data-date="{{model.created_time_raw}}"><div class="sbi_photo_wrap"><a class="sbi_photo" href="{{link}}" target="_blank"><img src="{{image}}" alt="{{image}}" /></a></div></div>',
+                filter: function(image) {
+                    //Create time for sorting
+                    var date = new Date(image.created_time*1000),
+                        time = date.getTime();
+                    image.created_time_raw = time;
+
+                    return true;
+                },
+                userId: parseInt( entry ),
+                accessToken: sb_instagram_js_options.sb_instagram_at,
+                after: function() {
+
+                    $self.find('.sbi_loader').remove();
+
+                    /* Load more button */
+                    if (this.hasNext()) morePosts.push('1');
+
+                    if(morePosts.length > 0){
+                        $loadBtn.show();
                     } else {
-                        imgRes = 'standard_resolution';
+                        $loadBtn.hide();
+                        $self.css('padding-bottom', 0);
                     }
 
-                    break;
-			    case 'thumb':
-			        imgRes = 'thumbnail';
-			        break;
-			    case 'medium':
-			        imgRes = 'low_resolution';
-			        break;
-			    default:
-			        imgRes = 'standard_resolution';
-			}
+                    // Call Custom JS if it exists
+                    if (typeof sbi_custom_js == 'function') sbi_custom_js();
 
-			//Split comma separated hashtags into array
-            var ids_arr = user_id.replace(/ /g,'').split(",");
-           	var looparray = ids_arr;
+                    //Fade photos on hover
+                    jQuery('#sb_instagram .sbi_photo').each(function(){
+                        jQuery(this).hover(function(){
+                            jQuery(this).fadeTo(200, 0.85);
+                        }, function(){
+                            jQuery(this).stop().fadeTo(500, 1);
+                        });
+                    });
 
-            //Get page info for first User ID
-            var headerStyles = '',
-                sbi_page_url = 'https://api.instagram.com/v1/users/' + ids_arr[0] + '?access_token=' + sb_instagram_js_options.sb_instagram_at;
 
-            if(feedOptions.headercolor.length) headerStyles = 'style="color: #'+feedOptions.headercolor+'"';
+                    //Sort posts by date
+                    //only sort the new posts that are loaded in, not the whole feed, otherwise some photos will switch positions due to dates
+                    $self.find('#sbi_images .sbi_item.sbi_new').sort(function (a, b) {
+                        var aComp = jQuery(a).attr("data-date"),
+                            bComp = jQuery(b).attr("data-date");
 
-            $.ajax({
-                method: "GET",
-                url: sbi_page_url,
-                dataType: "jsonp",
-                success: function(data) {
-                    $header = '<a href="http://instagram.com/'+data.data.username+'" target="_blank" title="@'+data.data.username+'" class="sbi_header_link" '+headerStyles+'>';
-                    $header += '<div class="sbi_header_text">';
-                    $header += '<h3'
-                    if( data.data.bio.length == 0 ) $header += ' class="sbi_no_bio"';
-                    $header += '>@'+data.data.username+'</h3>';
-                    if( data.data.bio.length ) $header += '<p class="sbi_bio">'+data.data.bio+'</p>';
-                    $header += '</div>';
-                    $header += '<div class="sbi_header_img">';
-                    $header += '<div class="sbi_header_img_hover"><i class="fa fa-instagram"></i></div>';
-                    $header += '<img src="'+data.data.profile_picture+'" alt="'+data.data.full_name+'" width="50" height="50">';
-                    $header += '</div>';
-                    $header += '</a>';
-                    //Add the header
-                    $self.find('.sb_instagram_header').prepend( $header );
-                    //Change the URL of the follow button
-                    if( $self.find('.sbi_follow_btn').length ) $self.find('.sbi_follow_btn a').attr('href', 'http://instagram.com/' + data.data.username )
+                        if(sortby == 'none'){
+                            //Order by date
+                            return bComp - aComp;
+                        } else {
+                            //Randomize
+                            return (Math.round(Math.random())-0.5);
+                        }
+
+                    }).appendTo( $self.find("#sbi_images") );
+
+                    //Remove the new class after 500ms, once the sorting is done
+                    setTimeout(function(){
+                        jQuery('#sbi_images .sbi_item.sbi_new').removeClass('sbi_new');
+                        //Reset the morePosts variable so we can check whether there are more posts every time the Load More button is clicked
+                        morePosts = [];
+                    }, 500);
+
+                    //Header profile pic hover
+                    $self.find('.sb_instagram_header a').hover(function(){
+                        $self.find('.sb_instagram_header .sbi_header_img_hover').fadeIn(200);
+                    }, function(){
+                        $self.find('.sb_instagram_header .sbi_header_img_hover').stop().fadeOut(600);
+                    });
+
+
+                }, // End 'after' function
+                error: function(data) {
+                    var sbiErrorMsg = '',
+                        sbiErrorDir = '';
+
+                    if( data.indexOf('access_token') > -1 ){
+                        sbiErrorMsg += '<p><b>Error: Access Token is not valid</b><br /><span>This error message is only visible to WordPress admins</span>';
+                        sbiErrorDir = "<p>There's an issue with the Instagram Access Token that you are using. Please obtain a new Access Token on the plugin's Settings page.";
+                    } else if( data.indexOf('user does not exist') > -1 ){
+                        sbiErrorMsg += '<p><b>Error: The User ID does not exist</b><br /><span>This error is only visible to WordPress admins</span>';
+                        sbiErrorDir = "<p>Please double check the Instagram User ID that you are using. To find your User ID simply enter your Instagram user name into this <a href='http://www.otzberg.net/iguserid/' target='_blank'>tool</a>.</p>";
+                    }
+
+                    //Add the error message to the page unless the user is displaying multiple ids or hashtags
+                    if(looparray.length < 2) jQuery('#sb_instagram').empty().append( '<p style="text-align: center;">Unable to show Instagram photos</p><div id="sbi_mod_error">' + sbiErrorMsg + sbiErrorDir + '</div>');
                 }
             });
 
-			//Loop through User IDs
-            // looparray.forEach(function(entry) {
-            for (var i = 0, len = looparray.length; i < len; i++) {
-                var entry = looparray[i];
+            $loadBtn.click(function() {
+                userFeed.next();
+            });
 
-				var userFeed = new instagramfeed({
-					target: $target,
-				    get: getType,
-				    sortBy: sortby,
-				    resolution: imgRes,
-				    limit: parseInt( num ),
-				    template: '<div class="sbi_item sbi_type_{{model.type}} sbi_new" id="sbi_{{id}}" data-date="{{model.created_time_raw}}"><div class="sbi_photo_wrap"><a class="sbi_photo" href="{{link}}" target="_blank"><img src="{{image}}" alt="{{image}}" /></a></div></div>',
-				    filter: function(image) {
-				    	//Create time for sorting
-    					var date = new Date(image.created_time*1000),
-    						time = date.getTime();
-                        image.created_time_raw = time;
+            userFeed.run();
 
-    					return true;
-    				},
-				    userId: parseInt( entry ),
-				    accessToken: sb_instagram_js_options.sb_instagram_at,
-				    after: function() {
+        }); //End User ID array loop
 
-                        $self.find('.sbi_loader').remove();
+    
+    });
 
-    			    	/* Load more button */
-					    if (this.hasNext()) {
-					     	$loadBtn.show();
-					    } else {
-					    	$loadBtn.hide();
-					    	$self.css('padding-bottom', 0);
-					    }
-
-					    // Call Custom JS if it exists
-    					if (typeof sbi_custom_js == 'function') sbi_custom_js();
-
-    					//Fade photos on hover
-    					$('#sb_instagram .sbi_photo').each(function(){
-    						$(this).hover(function(){
-								$(this).fadeTo(200, 0.85);
-							}, function(){
-								$(this).stop().fadeTo(500, 1);
-							});
-    					});
-
-
-    					//Sort posts by date
-                        //only sort the new posts that are loaded in, not the whole feed, otherwise some photos will switch positions due to dates
-                        $self.find('#sbi_images .sbi_item.sbi_new').sort(function (a, b) {
-                            var aComp = $(a).attr("data-date"),
-                                bComp = $(b).attr("data-date");
-
-                            if(sortby == 'none'){
-                                //Order by date
-                                return bComp - aComp;
-                            } else {
-                                //Randomize
-                                return (Math.round(Math.random())-0.5);
-                            }
-
-                        }).appendTo( $self.find("#sbi_images") );
-
-                        //Remove the new class after 500ms, once the sorting is done
-                        setTimeout(function(){
-                            $('#sbi_images .sbi_item.sbi_new').removeClass('sbi_new');
-                        }, 500);
-
-                        //Header profile pic hover
-                        $self.find('.sb_instagram_header a').hover(function(){
-                            $self.find('.sb_instagram_header .sbi_header_img_hover').fadeIn(200);
-                        }, function(){
-                            $self.find('.sb_instagram_header .sbi_header_img_hover').stop().fadeOut(600);
-                        });
-
-
-					}, // End 'after' function
-                    error: function(data) {
-                        var sbiErrorMsg = '',
-                            sbiErrorDir = '';
-
-                        if( data.indexOf('access_token') > -1 ){
-                            sbiErrorMsg += '<p><b>Error: Access Token is not valid</b><br /><span>This error message is only visible to WordPress admins</span>';
-                            sbiErrorDir = "<p>There's an issue with the Instagram Access Token that you are using. Please obtain a new Access Token on the plugin's Settings page.";
-                        } else if( data.indexOf('user does not exist') > -1 ){
-                            sbiErrorMsg += '<p><b>Error: The User ID does not exist</b><br /><span>This error is only visible to WordPress admins</span>';
-                            sbiErrorDir = "<p>Please double check the Instagram User ID that you are using. To find your User ID simply enter your Instagram user name into this <a href='http://www.otzberg.net/iguserid/' target='_blank'>tool</a>.</p>";
-                        }
-
-                        //Add the error message to the page unless the user is displaying multiple ids or hashtags
-                        if(looparray.length < 2) $('#sb_instagram').empty().append( '<p style="text-align: center;">Unable to show Instagram photos</p><div id="sbi_mod_error">' + sbiErrorMsg + sbiErrorDir + '</div>');
-                    }
-				});
-
-				$loadBtn.click(function() {
-					userFeed.next();
-				});
-
-				userFeed.run();
-
-			} //End User ID array loop
-
-		
-		});
-
-	}
-	sbi_init();
-
-
-
-})(jQuery);
+}
+sbi_init();

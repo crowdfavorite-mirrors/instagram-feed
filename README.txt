@@ -3,7 +3,7 @@ Contributors: smashballoon
 Tags: Instagram, Instagram feed, Instagram photos, Instagram plugin, Instagram stream, Custom Instagram Feed, responsive Instagram, mobile Instagram, Instagram posts, Instagram wall, Instagram account
 Requires at least: 3.0
 Tested up to: 4.1
-Stable tag: 1.3.2
+Stable tag: 1.3.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -179,6 +179,10 @@ For more shortcode options, check out the [Pro version](http://smashballoon.com/
 7. The Instagram Feed plugin Settings pages
 
 == Changelog ==
+= 1.3.3 =
+* Fix: Fixed an issue with the 'Load more' button not always showing when displaying Instagram photos from multiple User IDs
+* Fix: Moved the initiating sbi_init function outside of the jQuery ready function so that it can be called externally if needed by Ajax powered themes/plugins
+
 = 1.3.2 =
 * New: Added an option to disable the mobile layout
 * New: Added an setting which allows you to use the plugin with an Ajax powered theme
