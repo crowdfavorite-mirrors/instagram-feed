@@ -2,8 +2,8 @@
 Contributors: smashballoon
 Tags: Instagram, Instagram feed, Instagram photos, Instagram plugin, Instagram stream, Custom Instagram Feed, responsive Instagram, mobile Instagram, Instagram posts, Instagram wall, Instagram account
 Requires at least: 3.0
-Tested up to: 4.1
-Stable tag: 1.3.3
+Tested up to: 4.2
+Stable tag: 1.3.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -34,10 +34,10 @@ Display Instagram photos from any non-private Instagram accounts, either in the 
 * **Keep Your Site Looking Fresh** - Automatically push your new Instagram content straight to your site to keep it looking fresh and keeping your audience engaged.
 * **Super simple to set up** - Once installed, you can be displaying your Instagram photos within 30 seconds! No confusing steps or Instagram Developer account needed.
 
-= Featured Review =
-"**Simple and concise** - Excellent plugin. Simple and non-bloated. I had a couple small issues with the plugin when I first started using it, but a quick comment on the support forums got a new version pushed out the next day with the fix.
+= Featured Reviews =
+"**Simple and concise** - Excellent plugin. Simple and non-bloated. I had a couple small issues with the plugin when I first started using it, but a quick comment on the support forums got a new version pushed out the next day with the fix. Awesome support!" - [Josh Jones](https://wordpress.org/support/topic/simple-and-concise-3 'Simple and concise Instagram plugin')
 
-Awesome support!" - [Josh Jones](https://wordpress.org/support/topic/simple-and-concise-3 'Simple and concise Instagram plugin')
+"**Great plugin, greater support!** - I've definitely noticed an increase in followers on Instagram since I added this plugin to my sidebar. Thanks for the help in making some adjustments...looks and works great!" - [BNOTP](https://wordpress.org/support/topic/thanks-for-a-great-plugin-6 'Great plugin, greater Support!')
 
 = Feedback or Support =
 We're dedicated to providing the most customizable, robust and well supported Instagram feed plugin in the world, so if you have an issue or have any feedback on how to improve the plugin then please open a ticket in the [Support forum](http://wordpress.org/support/plugin/instagram-feed 'Instagram Feed Support Forum').
@@ -56,7 +56,7 @@ For simple step-by-step directions on how to set up the Instagram Feed plugin pl
 
 = Shortcode Options =
 * **General Options**
-* **id** - An Instagram User ID - Example: `[instagram-feed id=1234567]`
+* **id** - An Instagram User ID - Example: `[instagram-feed id=AN_INSTAGRAM_USER_ID]`
 * **width** - The width of your feed. Any number - Example: `[instagram-feed width=50]`
 * **widthunit** - The unit of the width. 'px' or '%' - Example: `[instagram-feed widthunit=%]`
 * **height** - The height of your feed. Any number - Example: `[instagram-feed height=250]`
@@ -67,7 +67,9 @@ For simple step-by-step directions on how to set up the Instagram Feed plugin pl
 * **Photo Options**
 * **sortby** - Sort the posts by Newest to Oldest (none) or Random (random) - Example: `[instagram-feed sortby=random]`
 * **num** - The number of photos to display initially. Maximum is 33 - Example: `[instagram-feed num=10]`
+
 * **cols** - The number of columns in your feed. 1 - 10 - Example: `[instagram-feed cols=5]`
+* **imageres** - The resolution/size of the photos. 'auto', full', 'medium' or 'thumb' - Example: `[instagram-feed imageres=full]`
 * **imagepadding** - The spacing around your photos - Example: `[instagram-feed imagepadding=10]`
 * **imagepaddingunit** - The unit of the padding. 'px' or '%' - Example: `[instagram-feed imagepaddingunit=px]`
 * **disablemobile** - Disable the mobile layout. 'true' or 'false' - Example: `[instagram-feed disablemobile=true]`
@@ -80,7 +82,7 @@ For simple step-by-step directions on how to set up the Instagram Feed plugin pl
 * **showbutton** - Whether to show the 'Load More' button. 'true' or 'false' - Example: `[instagram-feed showbutton='false']`
 * **buttoncolor** - The background color of the button. Any hex color code - Example: `[instagram-feed buttoncolor=#000]`
 * **buttontextcolor** - The text color of the button. Any hex color code - Example: `[instagram-feed buttontextcolor=#fff]`
-* **imageres** - The resolution/size of the photos. 'full', 'medium' or 'thumb' - Example: `[instagram-feed imageres=full]`
+* **buttontext** - The text used for the button - Example: `[instagram-feed buttontext="Load More Photos"]`
 *
 * **'Follow on Instagram' Button Options**
 * **showfollow** - Whether to show the 'Follow on Instagram' button. 'true' or 'false' - Example: `[instagram-feed showfollow=true]`
@@ -106,20 +108,21 @@ We've made it super easy. Simply click on the big blue button on the Instagram F
 
 You can also display photos from other peoples Instagram accounts. To find their Instagram User ID you can use [this tool](http://www.otzberg.net/iguserid/).
 
-= Are there any security issues with using an Access Token on my site? =
-
-Nope. The Access Token used in the plugin is a "read only" token, which means that it could never be used maliciously to manipulate your Instagram account.
-
 = My Instagram feed isn't displaying. Why not!? =
 
 There are a few common reasons for this:
 
-* Your Instagram account may be set to private. Instagram doesn't allow photos from private Instagram accounts to be displayed publicly.
-* Your Access Token may not be valid. Try clicking on the blue Instagram login button on the plugin's Settings page again and copy and paste the Instagram token it gives you into the plugin's Access Token field.
-* Your User ID may not be valid. Be sure you're not using your Instagram username instead of your User ID. You can find your Instagram User ID by using [this tool](http://www.otzberg.net/iguserid/).
-* Your website may contain a JavaScript error which is preventing JavaScript from running. The plugin uses JavaScript to load the Instagram photos into your page and so needs JavaScript to be running in order to work. You would need to remove any existing JavaScript errors on your website for the plugin to be able to load in your feed.
+* **Your Access Token may not be valid.** Try clicking on the blue Instagram login button on the plugin's Settings page again and copy and paste the Instagram token it gives you into the plugin's Access Token field.
+* **Your Instagram account may be set to private.** Your Instagram account may be set to private. Instagram doesn't allow photos from private Instagram accounts to be displayed publicly.
+* **Your User ID may not be valid**. Be sure you're not using your Instagram username instead of your User ID. You can find your Instagram User ID by using [this tool](http://www.otzberg.net/iguserid/).
+* **The plugin’s JavaScript file isn’t being included in your page.** This is most likely because your WordPress theme is missing the WordPress [wp_footer](http://codex.wordpress.org/Function_Reference/wp_footer) function which is required for plugins to be able to add their JavaScript files to your page. You can fix this by opening your theme's **footer.php** file and adding the following directly before the closing </body> tag: `<?php wp_footer(); ?>`
+* **Your website may contain a JavaScript error which is preventing JavaScript from running.** The plugin uses JavaScript to load the Instagram photos into your page and so needs JavaScript to be running in order to work. You would need to remove any existing JavaScript errors on your website for the plugin to be able to load in your feed.
 
 If you're still having an issue displaying your feed then please open a ticket in the [Support forum](http://wordpress.org/support/plugin/instagram-feed 'Instagram Feed Support Forum') with a link to the page where you're trying to display the Instagram feed and, if possible, a link to your Instagram account.
+
+= Are there any security issues with using an Access Token on my site? =
+
+Nope. The Access Token used in the plugin is a "read only" token, which means that it could never be used maliciously to manipulate your Instagram account.
 
 = Can I view the full-size photos or play Instagram videos directly on my website?  =
 
@@ -134,7 +137,7 @@ You can embed your Instagram feed directly into a template file by using the Wor
 The below options are available on the Instagram Feed Settings page but can also be used directly in the `[instagram-feed]` shortcode to customize individual Instagram feeds on a feed-by-feed basis.
 
 * **General Options**
-* **id** - An Instagram User ID - Example: `[instagram-feed id=1234567]`
+* **id** - An Instagram User ID - Example: `[instagram-feed id=AN_INSTAGRAM_USER_ID]`
 * **width** - The width of your feed. Any number - Example: `[instagram-feed width=50]`
 * **widthunit** - The unit of the width. 'px' or '%' - Example: `[instagram-feed widthunit=%]`
 * **height** - The height of your feed. Any number - Example: `[instagram-feed height=250]`
@@ -145,7 +148,9 @@ The below options are available on the Instagram Feed Settings page but can also
 * **Photo Options**
 * **sortby** - Sort the posts by Newest to Oldest (none) or Random (random) - Example: `[instagram-feed sortby=random]`
 * **num** - The number of photos to display initially. Maximum is 33 - Example: `[instagram-feed num=10]`
+
 * **cols** - The number of columns in your feed. 1 - 10 - Example: `[instagram-feed cols=5]`
+* **imageres** - The resolution/size of the photos. 'auto', full', 'medium' or 'thumb' - Example: `[instagram-feed imageres=full]`
 * **imagepadding** - The spacing around your photos - Example: `[instagram-feed imagepadding=10]`
 * **imagepaddingunit** - The unit of the padding. 'px' or '%' - Example: `[instagram-feed imagepaddingunit=px]`
 * **disablemobile** - Disable the mobile layout. 'true' or 'false' - Example: `[instagram-feed disablemobile=true]`
@@ -158,7 +163,7 @@ The below options are available on the Instagram Feed Settings page but can also
 * **showbutton** - Whether to show the 'Load More' button. 'true' or 'false' - Example: `[instagram-feed showbutton='false']`
 * **buttoncolor** - The background color of the button. Any hex color code - Example: `[instagram-feed buttoncolor=#000]`
 * **buttontextcolor** - The text color of the button. Any hex color code - Example: `[instagram-feed buttontextcolor=#fff]`
-* **imageres** - The resolution/size of the photos. 'full', 'medium' or 'thumb' - Example: `[instagram-feed imageres=full]`
+* **buttontext** - The text used for the button - Example: `[instagram-feed buttontext="Load More Photos"]`
 *
 * **'Follow on Instagram' Button Options**
 * **showfollow** - Whether to show the 'Follow on Instagram' button. 'true' or 'false' - Example: `[instagram-feed showfollow=true]`
@@ -167,6 +172,8 @@ The below options are available on the Instagram Feed Settings page but can also
 * **followtext** - The text used for the button - Example: `[instagram-feed followtext="Follow me"]`
 
 For more shortcode options, check out the [Pro version](http://smashballoon.com/instagram-feed/ 'Instagram Feed Pro').
+
+For more FAQs related to the Instagram Feed plugin please visit the [FAQ section](https://smashballoon.com/instagram-feed/support/faq/ 'Instagram Feed plugin FAQs') on our website.
 
 == Screenshots ==
 
@@ -179,6 +186,24 @@ For more shortcode options, check out the [Pro version](http://smashballoon.com/
 7. The Instagram Feed plugin Settings pages
 
 == Changelog ==
+= 1.3.7 =
+* Fix: Fixed an issue with double quotes in photo captions (used in the photo alt tags) which caused a formatting issue
+
+= 1.3.6 =
+* Fix: Fixed an issue introduced in version 1.3.4 which was causing theme settings to not be applied in some themes
+
+= 1.3.5 =
+* Fix: Reverted the 'prop' function introduced in the last update back to 'attr' as prop isn't supported in older versions of jQuery
+* Fix: Removed the image load function as it was causing images not to be displayed for some users
+
+= 1.3.4 =
+* Fix: Used the photo caption to add a more descriptive alt tag to the images
+* Fix: Images are now only displayed once they're fully loaded
+* Fix: Added a stricter CSS implementation for some elements to prevent styles being overridden by themes
+* Fix: Added CSS opacity property to images to prevent issues with lazy loading in some themes
+* Fix: Removed a line of code which was disabling WordPress Debug/Error Reporting. If needed, this can be disabled again by using the setting at the bottom of the plugin's 'Customize' settings page.
+* Fix: Made some JavaScript improvements to the core plugin code
+
 = 1.3.3 =
 * Fix: Fixed an issue with the 'Load more' button not always showing when displaying Instagram photos from multiple User IDs
 * Fix: Moved the initiating sbi_init function outside of the jQuery ready function so that it can be called externally if needed by Ajax powered themes/plugins

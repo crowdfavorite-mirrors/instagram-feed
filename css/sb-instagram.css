@@ -95,6 +95,7 @@
   padding: 0 !important;
   margin: 0 !important;
   max-width: 100% !important;
+  opacity: 1 !important;
 }
 #sb_instagram .sbi_link{
   display: none;
@@ -180,7 +181,6 @@
 }
 /* Profile pic hover */
 #sb_instagram .sbi_header_img_hover{
-  display: none;
   position: absolute;
   width: 100%;
   top: 0;
@@ -189,6 +189,19 @@
   text-align: center;
   color: #fff;
   background: rgba(0,0,0,0.75);
+
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+  filter: alpha(opacity=0);
+  -moz-opacity: 0;
+  -khtml-opacity: 0;
+  opacity: 0;
+  border-radius: 40px;
+  transition: opacity 0.2s;
+}
+/* Fade the Instagram icon in when hovering on the header */
+#sb_instagram .sb_instagram_header a:hover .sbi_header_img_hover,
+#sb_instagram .sb_instagram_header a:focus .sbi_header_img_hover{
+  opacity: 1;
 }
 #sb_instagram .sbi_header_img_hover .fa{
   position: absolute;

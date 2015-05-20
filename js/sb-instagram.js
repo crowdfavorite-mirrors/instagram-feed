@@ -11,7 +11,6 @@
 
 })(jQuery);
 
-
 function sbi_init(){
 
     jQuery('#sb_instagram.sbi').each(function(){
@@ -20,7 +19,7 @@ function sbi_init(){
             $target = $self.find('#sbi_images'),
             $loadBtn = $self.find("#sbi_load .sbi_load_btn"),
             imgRes = 'standard_resolution',
-            cols = parseInt( this.getAttribute('data-cols') ),
+            cols = parseInt( this.getAttribute('data-cols'), 10 ),
             num = this.getAttribute('data-num'),
             //Convert styles JSON string to an object
             feedOptions = JSON.parse( this.getAttribute('data-options') ),
@@ -76,12 +75,12 @@ function sbi_init(){
             url: sbi_page_url,
             dataType: "jsonp",
             success: function(data) {
-                $header = '<a href="http://instagram.com/'+data.data.username+'" target="_blank" title="@'+data.data.username+'" class="sbi_header_link" '+headerStyles+'>';
+                $header = '<a href="http://instagram.com/'+data.data.username+'" target="_blank" title="@'+data.data.username+'" class="sbi_header_link">';
                 $header += '<div class="sbi_header_text">';
-                $header += '<h3'
+                $header += '<h3 ' + headerStyles;
                 if( data.data.bio.length == 0 ) $header += ' class="sbi_no_bio"';
                 $header += '>@'+data.data.username+'</h3>';
-                if( data.data.bio.length ) $header += '<p class="sbi_bio">'+data.data.bio+'</p>';
+                if( data.data.bio.length ) $header += '<p class="sbi_bio" '+headerStyles+'>'+data.data.bio+'</p>';
                 $header += '</div>';
                 $header += '<div class="sbi_header_img">';
                 $header += '<div class="sbi_header_img_hover"><i class="fa fa-instagram"></i></div>';
@@ -104,17 +103,21 @@ function sbi_init(){
                 get: getType,
                 sortBy: sortby,
                 resolution: imgRes,
-                limit: parseInt( num ),
-                template: '<div class="sbi_item sbi_type_{{model.type}} sbi_new" id="sbi_{{id}}" data-date="{{model.created_time_raw}}"><div class="sbi_photo_wrap"><a class="sbi_photo" href="{{link}}" target="_blank"><img src="{{image}}" alt="{{image}}" /></a></div></div>',
+                limit: parseInt( num, 10 ),
+                template: '<div class="sbi_item sbi_type_{{model.type}} sbi_new" id="sbi_{{id}}" data-date="{{model.created_time_raw}}"><div class="sbi_photo_wrap"><a class="sbi_photo" href="{{link}}" target="_blank"><img src="{{image}}" alt="{{caption}}" /></a></div></div>',
                 filter: function(image) {
                     //Create time for sorting
                     var date = new Date(image.created_time*1000),
                         time = date.getTime();
                     image.created_time_raw = time;
 
+                    //Replace double quotes in the captions with the HTML symbol
+                    //Always check to make sure it exists
+                    if(image.caption != null) image.caption.text = image.caption.text.replace(/"/g, "&quot;");
+
                     return true;
                 },
-                userId: parseInt( entry ),
+                userId: parseInt( entry, 10 ),
                 accessToken: sb_instagram_js_options.sb_instagram_at,
                 after: function() {
 
@@ -142,12 +145,17 @@ function sbi_init(){
                         });
                     });
 
+                    //Only show images once they are fully loaded. Prevents issue in Firefox where alt text is shown initially before images appear.
+                    // jQuery('#sb_instagram .sbi_new img').on('load', function() {
+                    //     jQuery(this).removeClass('sbi_hide');
+                    // });
+
 
                     //Sort posts by date
                     //only sort the new posts that are loaded in, not the whole feed, otherwise some photos will switch positions due to dates
                     $self.find('#sbi_images .sbi_item.sbi_new').sort(function (a, b) {
-                        var aComp = jQuery(a).attr("data-date"),
-                            bComp = jQuery(b).attr("data-date");
+                        var aComp = jQuery(a).data('date'),
+                            bComp = jQuery(b).data('date');
 
                         if(sortby == 'none'){
                             //Order by date
@@ -165,13 +173,6 @@ function sbi_init(){
                         //Reset the morePosts variable so we can check whether there are more posts every time the Load More button is clicked
                         morePosts = [];
                     }, 500);
-
-                    //Header profile pic hover
-                    $self.find('.sb_instagram_header a').hover(function(){
-                        $self.find('.sb_instagram_header .sbi_header_img_hover').fadeIn(200);
-                    }, function(){
-                        $self.find('.sb_instagram_header .sbi_header_img_hover').stop().fadeOut(600);
-                    });
 
 
                 }, // End 'after' function
